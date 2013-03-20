@@ -1,0 +1,18 @@
+syms s c kp ki kd l;
+g=tf([3],[1 4 3]);
+c=tf([kd kp ki],[1 0]);
+t1=g*c/(1+g*c);
+subs(t1,{kp,ki,kd},{3,7,1.5});
+pretty(t1);
+t1=simplify(t1);
+[A,B,C,D]=tf2ss(t1);
+l=length(A);
+I=eye(l,l);
+phi=ilaplace(inv(s*I-A));
+x=inv(A)*(phi-I)*B;
+y=C*x;
+e=(1-y)^2;
+t=0:.01:5;
+f=inline(e);
+E=e(t);
+plot(t,E);
